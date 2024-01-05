@@ -3,6 +3,10 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\Admin\IndexController;
+use App\Http\Controllers\Admin\PermissionController;
+use App\Http\Controllers\Admin\RoleController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -16,4 +20,13 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
+});
+
+
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::get('/admin', [IndexController::class, 'index'])->name('admin.index');
+    Route::resource('/admin/roles', RoleController::class);
+    Route::resource('/admin/permissions', PermissionController::class);
+
+    // Autres routes API nécessitant à la fois l'authentification et le middleware 'role:admin'
 });
